@@ -8,6 +8,7 @@ import ServiceBooking from './components/ServiceBooking';
 import Community from './components/Community';
 import Profile from './components/Profile';
 import AdminDashboard from './components/AdminDashboard';
+import HealthRecord from './components/HealthRecord';
 import { Home, ShoppingBag, Calendar, Users, User, Plus, ShieldCheck } from 'lucide-react';
 
 function App() {
@@ -24,14 +25,15 @@ function App() {
     <div className="app-container">
       {/* Dynamic Page Rendering */}
       <Routes>
-        <Route path="/" element={<Dashboard navigateToLog={() => navigateTo('log')} />} />
+        <Route path="/" element={<Dashboard navigateToLog={() => navigateTo('log')} navigateTo={navigateTo} />} />
         <Route path="/shop" element={<Marketplace />} />
         <Route path="/services" element={<ServiceBooking />} />
         <Route path="/community" element={<Community />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile navigateTo={navigateTo} />} />
         <Route path="/log" element={<DailyLog navigateTo={navigateTo} />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/health" element={<HealthRecord onBack={() => navigateTo('profile')} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

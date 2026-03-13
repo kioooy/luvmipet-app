@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flame, Trophy, Bone, Activity, Smile, HeartPulse } from 'lucide-react';
 
-export default function Dashboard({ navigateToLog }) {
+export default function Dashboard({ navigateToLog, navigateTo }) {
   // Mock data
   const healthScore = 92;
   const streak = 5;
@@ -42,6 +42,29 @@ export default function Dashboard({ navigateToLog }) {
             💖 Tuyệt vời! Cún đang rất khỏe.
           </p>
         </div>
+      </div>
+
+      {/* Vaccine Reminder Alert */}
+      <div
+        className="card"
+        onClick={() => navigateTo && navigateTo('health')}
+        style={{
+          marginBottom: '24px', cursor: 'pointer',
+          background: 'linear-gradient(135deg, #fff7e0 0%, #ffe5e5 100%)',
+          border: '1px solid #ffd166', display: 'flex', alignItems: 'center', gap: '14px'
+        }}
+      >
+        <div style={{
+          width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+          background: '#ffd166', display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <span style={{ fontSize: '22px' }}>💉</span>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: '14px', color: '#92400e' }}>Sắp đến: Tiêm phòng Milu!</div>
+          <div style={{ fontSize: '12px', color: '#b45309', marginTop: '2px' }}>Phòng bọ chét & ve • Còn 2 ngày</div>
+        </div>
+        <span style={{ fontSize: '12px', fontWeight: 700, color: '#d97706', whiteSpace: 'nowrap' }}>Xem →</span>
       </div>
 
       {/* Gamification Streak */}
