@@ -33,7 +33,7 @@ function App() {
         <Route path="/log" element={<DailyLog navigateTo={navigateTo} />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/health" element={<HealthRecord onBack={() => navigateTo('profile')} />} />
+        <Route path="/health" element={<HealthRecord onBack={() => navigateTo('profile')} navigateTo={navigateTo} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

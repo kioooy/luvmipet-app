@@ -2,16 +2,20 @@ import React from 'react';
 import { Flame, Trophy, Bone, Activity, Smile, HeartPulse } from 'lucide-react';
 
 export default function Dashboard({ navigateToLog, navigateTo }) {
-  // Mock data
   const healthScore = 92;
   const streak = 5;
+
+  // Dynamic greeting based on current time
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Chào buổi sáng' : hour < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+  const greetingEmoji = hour < 12 ? '☀️' : hour < 18 ? '🌤️' : '🌙';
 
   return (
     <div className="animate-fade-in" style={{ padding: '24px' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 className="text-h1">Chào buổi sáng!</h1>
+          <h1 className="text-h1">{greeting} {greetingEmoji}</h1>
           <p className="text-caption" style={{ marginTop: '4px' }}>Milu đang rất vui vẻ 🐶</p>
         </div>
         <div style={{ width: '50px', height: '50px', borderRadius: '50%', border: '3px solid var(--primary)', overflow: 'hidden' }}>

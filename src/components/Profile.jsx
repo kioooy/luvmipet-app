@@ -131,52 +131,102 @@ export default function Profile({ navigateTo }) {
     </div>
   );
 
+  const [showAddPet, setShowAddPet] = useState(false);
+  const [petForm, setPetForm] = useState({ name: '', species: 'Chó', breed: '', age: '' });
+  const [pets, setPets] = useState([
+    { id: 1, name: 'Milu', species: 'Chó', breed: 'Corgi', age: '2', status: 'Khỏe mạnh',
+      img: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80' }
+  ]);
+
+  const handleAddPet = () => {
+    if (!petForm.name.trim()) return;
+    setPets(prev => [...prev, {
+      id: Date.now(), name: petForm.name, species: petForm.species,
+      breed: petForm.breed || '—', age: petForm.age || '?', status: 'Khỏe mạnh', img: null
+    }]);
+    setPetForm({ name: '', species: 'Chó', breed: '', age: '' });
+    setShowAddPet(false);
+  };
+
   const renderPetsTab = () => (
     <div>
-      <div className="pet-list-item" style={{ marginBottom: '16px', padding: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img
-            src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
-            alt="Milu"
-            style={{ width: '60px', height: '60px', borderRadius: '12px', objectFit: 'cover' }}
-          />
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-main)' }}>Milu</div>
-            <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '4px' }}>Chó • Corgi</div>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--success)' }}>Khỏe mạnh</div>
+      {pets.map((pet) => (
+        <div key={pet.id} className="pet-list-item" style={{ marginBottom: '12px', padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {pet.img ? (
+              <img src={pet.img} alt={pet.name} style={{ width: '60px', height: '60px', borderRadius: '12px', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '60px', height: '60px', borderRadius: '12px', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
+                {pet.species === 'Chó' ? '🐶' : pet.species === 'Mèo' ? '🐱' : '🐾'}
+              </div>
+            )}
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-main)' }}>{pet.name}</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '4px' }}>{pet.species} • {pet.breed} • {pet.age} tuổi</div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--success)' }}>{pet.status}</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div
-        className="card"
-        onClick={() => { }}
-        style={{
-          marginTop: '16px',
-          background: 'linear-gradient(135deg, var(--primary) 0%, #ff8a65 100%)',
-          color: 'white',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px',
-          gap: '12px',
-          cursor: 'pointer',
-          boxShadow: '0 8px 24px rgba(255, 111, 97, 0.25)',
-          border: 'none',
-          transition: 'transform 0.2s',
-          transform: 'scale(1)'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-      >
-        <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '12px' }}>
-          <Plus size={32} color="white" />
+      ))}
+
+      {/* Add Pet Form */}
+      {showAddPet ? (
+        <div className="card" style={{ marginTop: '16px', border: '2px solid var(--primary)' }}>
+          <div style={{ fontWeight: 800, fontSize: '16px', marginBottom: '16px' }}>🐾 Thêm thú cưng mới</div>
+          {[
+            { label: 'Tên thú cưng *', key: 'name', placeholder: 'VD: Bông, Mèo Vàng...' },
+            { label: 'Giống', key: 'breed', placeholder: 'VD: Corgi, Poodle...' },
+            { label: 'Tuổi (năm)', key: 'age', placeholder: 'VD: 2', type: 'number' }
+          ].map(field => (
+            <div key={field.key} style={{ marginBottom: '12px' }}>
+              <label style={{ fontSize: '13px', fontWeight: 700, display: 'block', marginBottom: '6px', color: 'var(--text-muted)' }}>{field.label}</label>
+              <input
+                type={field.type || 'text'}
+                placeholder={field.placeholder}
+                value={petForm[field.key]}
+                onChange={e => setPetForm(p => ({ ...p, [field.key]: e.target.value }))}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 'var(--radius-md)', border: '1.5px solid #eee', fontFamily: 'inherit', fontSize: '14px', outline: 'none' }}
+              />
+            </div>
+          ))}
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ fontSize: '13px', fontWeight: 700, display: 'block', marginBottom: '6px', color: 'var(--text-muted)' }}>Loài</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {['Chó', 'Mèo', 'Khác'].map(s => (
+                <button key={s} onClick={() => setPetForm(p => ({ ...p, species: s }))}
+                  style={{ flex: 1, padding: '10px', borderRadius: 'var(--radius-md)', fontWeight: 700, fontSize: '14px', cursor: 'pointer', border: '2px solid', borderColor: petForm.species === s ? 'var(--primary)' : '#eee', background: petForm.species === s ? 'var(--primary-light)' : 'white', color: petForm.species === s ? 'var(--primary)' : 'var(--text-muted)' }}>
+                  {s === 'Chó' ? '🐶 Chó' : s === 'Mèo' ? '🐱 Mèo' : '🐾 Khác'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={() => setShowAddPet(false)} style={{ flex: 1, padding: '12px', borderRadius: 'var(--radius-md)', border: '2px solid #eee', background: 'white', fontWeight: 700, cursor: 'pointer' }}>Hủy</button>
+            <button onClick={handleAddPet} className="btn btn-primary" style={{ flex: 2 }}>Lưu thú cưng 🐾</button>
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 800, fontSize: '18px', marginBottom: '4px' }}>Thêm thú cưng mới</div>
-          <div style={{ fontSize: '14px', opacity: 0.9 }}>Càng đông càng vui! Bắt đầu lưu trữ kỷ niệm.</div>
+      ) : (
+        <div
+          className="card"
+          onClick={() => setShowAddPet(true)}
+          style={{
+            marginTop: '16px', background: 'linear-gradient(135deg, var(--primary) 0%, #ff8a65 100%)',
+            color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '24px', gap: '12px', cursor: 'pointer', boxShadow: '0 8px 24px rgba(255, 111, 97, 0.25)',
+            border: 'none', transition: 'transform 0.2s'
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '12px' }}>
+            <Plus size={32} color="white" />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontWeight: 800, fontSize: '18px', marginBottom: '4px' }}>Thêm thú cưng mới</div>
+            <div style={{ fontSize: '14px', opacity: 0.9 }}>Càng đông càng vui! Bắt đầu lưu trữ kỷ niệm.</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Health Record Quick Link */}
       <div
@@ -190,10 +240,7 @@ export default function Profile({ navigateTo }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px', height: '40px', borderRadius: '12px',
-            background: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{ fontSize: '20px' }}>🏥</span>
           </div>
           <div>
