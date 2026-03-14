@@ -42,7 +42,7 @@
 
 body {
   font-family: 'Nunito', sans-serif;
-  background-color: var(--background);
+  background-color: #f8fafc; /* Outer screen background */
   color: var(--text-main);
   line-height: 1.5;
   overflow-x: hidden;
@@ -59,8 +59,8 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 400px;
   margin: 0 auto;
   height: 100vh;
-  background-color: var(--background);
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  background-color: var(--background); /* App background is blush pink */
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
   position: relative;
   overflow: hidden;
   display: flex;
