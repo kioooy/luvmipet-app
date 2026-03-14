@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Settings, ChevronRight, CreditCard, Bell, Shield, HelpCircle, LogOut, Crown, ArrowLeft, Plus, Check } from 'lucide-react';
+import { Settings, ChevronRight, CreditCard, Bell, Shield, HelpCircle, LogOut, Crown, ArrowLeft, Plus, Check, QrCode, Lock, ActivitySquare } from 'lucide-react';
 
-export default function Profile({ navigateTo }) {
-  const [activeTab, setActiveTab] = useState('main'); // 'main', 'pets', 'notifications', 'payment', 'security', 'support'
+export default function Profile({ selectedPet, pets, onSelectPet, navigateTo, isPremium, setIsPremium }) {
+  const [activeTab, setActiveTab] = useState('main'); // 'main', 'pets', 'qr', 'upgrade', etc.
+  const [viewingPet, setViewingPet] = useState(null);
 
   const renderMainProfile = () => (
     <div className="animate-fade-in" style={{ padding: '24px' }}>
       <h1 className="text-h1" style={{ marginBottom: '24px' }}>Hồ Sơ</h1>
 
-      {/* User Info - Anonymous Demo */}
+      {/* User Info */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
         <div style={{
           width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'var(--primary-light)',
@@ -22,42 +23,103 @@ export default function Profile({ navigateTo }) {
         </div>
       </div>
 
-      {/* Premium Banner */}
-      <div className="premium-banner">
+      {/* Demo Free/Premium Toggle */}
+      <div style={{ background: 'var(--surface)', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', border: '1px solid #eee' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Crown size={20} color="#FFD166" />
-            <span style={{ fontWeight: 800, fontSize: '18px', color: '#FFD166' }}>LuvMiPet Premium</span>
-          </div>
-          <p style={{ fontSize: '13px', opacity: 0.9, maxWidth: '200px' }}>Mở khóa báo cáo sức khỏe chi tiết & ưu đãi dịch vụ.</p>
+          <div style={{ fontWeight: 800, fontSize: '15px' }}>Chế độ Demo Profile</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Mô phỏng trải nghiệm người dùng</div>
         </div>
-        <button
-          onClick={() => setActiveTab('upgrade')}
-          style={{ background: '#FFD166', color: '#2B2D42', border: 'none', padding: '10px 16px', borderRadius: 'var(--radius-pill)', fontWeight: 800, fontSize: '14px', cursor: 'pointer' }}
+        <div 
+          onClick={() => setIsPremium(!isPremium)}
+          style={{ 
+            width: '50px', height: '28px', borderRadius: '20px', 
+            background: isPremium ? 'var(--success)' : '#e2e8f0', 
+            position: 'relative', cursor: 'pointer', transition: 'all 0.3s ease'
+          }}
         >
-          Nâng cấp
-        </button>
+          <div style={{ 
+            width: '24px', height: '24px', borderRadius: '50%', background: 'white', 
+            position: 'absolute', top: '2px', left: isPremium ? '24px' : '2px', 
+            transition: 'all 0.3s ease', boxShadow: 'var(--shadow-sm)'
+          }}></div>
+        </div>
       </div>
+
+      {/* Premium Banner */}
+      {!isPremium && (
+        <div className="premium-banner">
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <Crown size={20} color="#FFD166" />
+              <span style={{ fontWeight: 800, fontSize: '18px', color: '#FFD166' }}>LuvMiPet Premium</span>
+            </div>
+            <p style={{ fontSize: '13px', opacity: 0.9, maxWidth: '200px' }}>Mở khóa báo cáo sức khỏe chi tiết & ưu đãi dịch vụ.</p>
+          </div>
+          <button
+            onClick={() => setActiveTab('upgrade')}
+            style={{ background: '#FFD166', color: '#2B2D42', border: 'none', padding: '10px 16px', borderRadius: 'var(--radius-pill)', fontWeight: 800, fontSize: '14px', cursor: 'pointer' }}
+          >
+            Nâng cấp
+          </button>
+        </div>
+      )}
 
       {/* Pets Management */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <h3 className="text-h2">Thú Cưng Của Tôi</h3>
-        <button onClick={() => setActiveTab('pets')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, fontSize: '14px', cursor: 'pointer' }}>Quản lý</button>
+        <button onClick={() => setActiveTab('pets')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, fontSize: '14px', cursor: 'pointer' }}>Xem tất cả</button>
       </div>
 
-      <div className="pet-list-item" onClick={() => setActiveTab('pets')} style={{ cursor: 'pointer' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img
-            src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
-            alt="Milu"
-            style={{ width: '50px', height: '50px', borderRadius: '12px', objectFit: 'cover' }}
-          />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: '16px' }}>Milu</div>
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Chó • Corgi • 2 tuổi</div>
+      {pets.slice(0, 2).map(pet => (
+        <div key={pet.id} className="pet-list-item" onClick={() => { setViewingPet(pet); setActiveTab('qr'); }} style={{ cursor: 'pointer', border: selectedPet?.id === pet.id ? '2px solid var(--primary)' : '2px solid transparent' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {pet.avatar ? (
+              <img src={pet.avatar} alt={pet.name} style={{ width: '50px', height: '50px', borderRadius: '12px', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                {pet.type === 'Dog' ? '🐶' : '🐱'}
+              </div>
+            )}
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {pet.name} {selectedPet?.id === pet.id && <span style={{ fontSize: '10px', background: 'var(--primary)', color: 'white', padding: '2px 6px', borderRadius: '8px' }}>Đang chọn</span>}
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{pet.type} • {pet.breed}</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: 'var(--background)', padding: '8px', borderRadius: '50%' }}>
+              <QrCode size={18} color="var(--text-main)" />
+            </div>
           </div>
         </div>
-        <ChevronRight size={20} color="var(--text-muted)" />
+      ))}
+
+      {/* Premium Feature: Blurred Out Section Example */}
+      <div className="card" style={{ marginTop: '24px', position: 'relative', overflow: 'hidden' }}>
+        <h3 className="text-h2" style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <ActivitySquare size={20} color="var(--secondary)" /> Báo cáo chuyên sâu
+        </h3>
+        
+        {!isPremium && (
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+            <div style={{ background: '#FFD166', color: '#2B2D42', padding: '8px 16px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, cursor: 'pointer' }} onClick={() => setActiveTab('upgrade')}>
+              <Lock size={16} /> Mở khóa Premium
+            </div>
+          </div>
+        )}
+
+        <div style={{ padding: '16px 0', filter: !isPremium ? 'blur(3px)' : 'none' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+             <span style={{ color: 'var(--text-muted)' }}>Xu hướng cân nặng</span>
+             <span style={{ fontWeight: 700, color: 'var(--success)' }}>Ổn định</span>
+           </div>
+           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+             <span style={{ color: 'var(--text-muted)' }}>Nguy cơ bệnh lý</span>
+             <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Tiêu hóa kém</span>
+           </div>
+           <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Dựa trên dữ liệu 30 ngày qua, AI phân tích {selectedPet?.name} có hệ tiêu hóa nhạy cảm. Đề xuất đổi hạt sang loại Grain-Free.</p>
+        </div>
       </div>
 
       {/* General Settings */}
@@ -80,26 +142,6 @@ export default function Profile({ navigateTo }) {
               <CreditCard size={18} color="var(--secondary)" />
             </div>
             <span style={{ fontWeight: 600 }}>Thanh toán</span>
-          </div>
-          <ChevronRight size={20} color="var(--text-muted)" />
-        </div>
-
-        <div className="setting-row" onClick={() => setActiveTab('security')} style={{ cursor: 'pointer' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Shield size={18} color="#64748b" />
-            </div>
-            <span style={{ fontWeight: 600 }}>Bảo mật</span>
-          </div>
-          <ChevronRight size={20} color="var(--text-muted)" />
-        </div>
-
-        <div className="setting-row" onClick={() => setActiveTab('support')} style={{ cursor: 'pointer' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#fff7e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <HelpCircle size={18} color="#f59e0b" />
-            </div>
-            <span style={{ fontWeight: 600 }}>Trợ giúp & Hỗ trợ</span>
           </div>
           <ChevronRight size={20} color="var(--text-muted)" />
         </div>
@@ -131,133 +173,36 @@ export default function Profile({ navigateTo }) {
     </div>
   );
 
-  const [showAddPet, setShowAddPet] = useState(false);
-  const [petForm, setPetForm] = useState({ name: '', species: 'Chó', breed: '', age: '' });
-  const [pets, setPets] = useState([
-    { id: 1, name: 'Milu', species: 'Chó', breed: 'Corgi', age: '2', status: 'Khỏe mạnh',
-      img: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80' }
-  ]);
-
-  const handleAddPet = () => {
-    if (!petForm.name.trim()) return;
-    setPets(prev => [...prev, {
-      id: Date.now(), name: petForm.name, species: petForm.species,
-      breed: petForm.breed || '—', age: petForm.age || '?', status: 'Khỏe mạnh', img: null
-    }]);
-    setPetForm({ name: '', species: 'Chó', breed: '', age: '' });
-    setShowAddPet(false);
-  };
-
-  const renderPetsTab = () => (
-    <div>
-      {pets.map((pet) => (
-        <div key={pet.id} className="pet-list-item" style={{ marginBottom: '12px', padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {pet.img ? (
-              <img src={pet.img} alt={pet.name} style={{ width: '60px', height: '60px', borderRadius: '12px', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '60px', height: '60px', borderRadius: '12px', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
-                {pet.species === 'Chó' ? '🐶' : pet.species === 'Mèo' ? '🐱' : '🐾'}
-              </div>
-            )}
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-main)' }}>{pet.name}</div>
-              <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '4px' }}>{pet.species} • {pet.breed} • {pet.age} tuổi</div>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--success)' }}>{pet.status}</div>
-            </div>
+  const renderQRTab = () => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '300px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '24px' }}>
+        {viewingPet?.avatar ? (
+          <img src={viewingPet.avatar} alt="" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '4px solid var(--primary-light)', marginBottom: '16px', marginTop: '-60px' }} />
+        ) : (
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', border: '4px solid white', marginBottom: '16px', marginTop: '-60px' }}>
+            {viewingPet?.type === 'Dog' ? '🐶' : '🐱'}
           </div>
+        )}
+        <h2 className="text-h1" style={{ marginBottom: '4px' }}>{viewingPet?.name}</h2>
+        <p className="text-caption" style={{ marginBottom: '24px' }}>{viewingPet?.breed} • {viewingPet?.weight}</p>
+        
+        {/* Mock QR Code Image */}
+        <div style={{ background: 'white', padding: '16px', borderRadius: '16px', border: '2px solid #eee', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <QrCode size={150} color="var(--dark-teal)" />
         </div>
-      ))}
+        
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '24px' }}>
+          Đưa mã QR này cho phòng khám để đồng bộ bệnh án và lịch sử tiêm phòng.
+        </p>
 
-      {/* Add Pet Form */}
-      {showAddPet ? (
-        <div className="card" style={{ marginTop: '16px', border: '2px solid var(--primary)' }}>
-          <div style={{ fontWeight: 800, fontSize: '16px', marginBottom: '16px' }}>🐾 Thêm thú cưng mới</div>
-          {[
-            { label: 'Tên thú cưng *', key: 'name', placeholder: 'VD: Bông, Mèo Vàng...' },
-            { label: 'Giống', key: 'breed', placeholder: 'VD: Corgi, Poodle...' },
-            { label: 'Tuổi (năm)', key: 'age', placeholder: 'VD: 2', type: 'number' }
-          ].map(field => (
-            <div key={field.key} style={{ marginBottom: '12px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 700, display: 'block', marginBottom: '6px', color: 'var(--text-muted)' }}>{field.label}</label>
-              <input
-                type={field.type || 'text'}
-                placeholder={field.placeholder}
-                value={petForm[field.key]}
-                onChange={e => setPetForm(p => ({ ...p, [field.key]: e.target.value }))}
-                style={{ width: '100%', padding: '12px 14px', borderRadius: 'var(--radius-md)', border: '1.5px solid #eee', fontFamily: 'inherit', fontSize: '14px', outline: 'none' }}
-              />
-            </div>
-          ))}
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 700, display: 'block', marginBottom: '6px', color: 'var(--text-muted)' }}>Loài</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              {['Chó', 'Mèo', 'Khác'].map(s => (
-                <button key={s} onClick={() => setPetForm(p => ({ ...p, species: s }))}
-                  style={{ flex: 1, padding: '10px', borderRadius: 'var(--radius-md)', fontWeight: 700, fontSize: '14px', cursor: 'pointer', border: '2px solid', borderColor: petForm.species === s ? 'var(--primary)' : '#eee', background: petForm.species === s ? 'var(--primary-light)' : 'white', color: petForm.species === s ? 'var(--primary)' : 'var(--text-muted)' }}>
-                  {s === 'Chó' ? '🐶 Chó' : s === 'Mèo' ? '🐱 Mèo' : '🐾 Khác'}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={() => setShowAddPet(false)} style={{ flex: 1, padding: '12px', borderRadius: 'var(--radius-md)', border: '2px solid #eee', background: 'white', fontWeight: 700, cursor: 'pointer' }}>Hủy</button>
-            <button onClick={handleAddPet} className="btn btn-primary" style={{ flex: 2 }}>Lưu thú cưng 🐾</button>
-          </div>
-        </div>
-      ) : (
-        <div
-          className="card"
-          onClick={() => setShowAddPet(true)}
-          style={{
-            marginTop: '16px', background: 'linear-gradient(135deg, var(--primary) 0%, #ff8a65 100%)',
-            color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            padding: '24px', gap: '12px', cursor: 'pointer', boxShadow: '0 8px 24px rgba(255, 111, 97, 0.25)',
-            border: 'none', transition: 'transform 0.2s'
-          }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        <button 
+          className="btn btn-primary" 
+          style={{ width: '100%', marginTop: '24px' }}
+          onClick={() => { onSelectPet(viewingPet.id); setActiveTab('main'); }}
         >
-          <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '12px' }}>
-            <Plus size={32} color="white" />
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: 800, fontSize: '18px', marginBottom: '4px' }}>Thêm thú cưng mới</div>
-            <div style={{ fontSize: '14px', opacity: 0.9 }}>Càng đông càng vui! Bắt đầu lưu trữ kỷ niệm.</div>
-          </div>
-        </div>
-      )}
-
-      {/* Health Record Quick Link */}
-      <div
-        className="card"
-        onClick={() => navigateTo && navigateTo('health')}
-        style={{
-          marginTop: '16px', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #e0fcf9 0%, #d1fae5 100%)',
-          border: '1px solid #a7f3d0'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: '20px' }}>🏥</span>
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: '15px' }}>Sổ Sức Khỏe</div>
-            <div style={{ fontSize: '12px', color: '#065f46' }}>Bệnh án • Tiêm phòng • Triệu chứng</div>
-          </div>
-        </div>
-        <ChevronRight size={20} color="var(--success)" />
+          Chọn thú cưng này
+        </button>
       </div>
-    </div>
-  );
-
-  const renderPlaceholder = (icon, text) => (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', textAlign: 'center', background: 'var(--surface)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
-      {icon}
-      <h3 className="text-h2" style={{ marginTop: '16px', marginBottom: '8px' }}>Cài đặt {text}</h3>
-      <p className="text-muted" style={{ fontSize: '14px' }}>Tính năng đang được phát triển trong bản demo này.</p>
     </div>
   );
 
@@ -267,31 +212,6 @@ export default function Profile({ navigateTo }) {
         <Crown size={48} color="#FFD166" style={{ margin: '0 auto', marginBottom: '16px' }} />
         <h2 className="text-h1">Nâng cấp LuvMiPet</h2>
         <p className="text-muted" style={{ marginTop: '8px' }}>Mở khóa toàn bộ giới hạn và trải nghiệm tốt nhất cho thú cưng của bạn.</p>
-      </div>
-
-      {/* Basic Plan */}
-      <div className="card" style={{ border: '2px solid transparent' }}>
-        <h3 className="text-h2" style={{ marginBottom: '8px' }}>Gói Cơ Bản</h3>
-        <div style={{ fontSize: '24px', fontWeight: 800, marginBottom: '16px' }}>Miễn phí</div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="var(--success)" />
-            <span style={{ fontSize: '15px' }}>Tối đa 2 thú cưng</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="var(--success)" />
-            <span style={{ fontSize: '15px' }}>Nhật ký sức khỏe cơ bản</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="var(--success)" />
-            <span style={{ fontSize: '15px' }}>Tham gia cộng đồng</span>
-          </div>
-        </div>
-
-        <button style={{ width: '100%', marginTop: '24px', padding: '14px', borderRadius: 'var(--radius-md)', background: 'var(--surface)', color: 'var(--text-main)', border: '2px solid var(--border)', fontWeight: 700, fontSize: '15px', cursor: 'default' }}>
-          Đang sử dụng
-        </button>
       </div>
 
       {/* Premium Plan */}
@@ -305,32 +225,12 @@ export default function Profile({ navigateTo }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="#FFD166" />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>Không giới hạn số lượng thú cưng</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="#FFD166" />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>Nhập được nhiều điểm tích lũy hơn</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="#FFD166" />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>Báo cáo sức khỏe AI chi tiết</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="#FFD166" />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>Ưu tiên đặt lịch dịch vụ nhanh</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Check size={20} color="#FFD166" />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>Huy hiệu Premium nổi bật</span>
-          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Check size={20} color="#FFD166" /><span style={{ fontSize: '15px', fontWeight: 600 }}>Không giới hạn số lượng thú cưng</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Check size={20} color="#FFD166" /><span style={{ fontSize: '15px', fontWeight: 600 }}>Báo cáo sức khỏe AI chi tiết</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Check size={20} color="#FFD166" /><span style={{ fontSize: '15px', fontWeight: 600 }}>Huy hiệu Premium nổi bật</span></div>
         </div>
 
-        <button
-          onClick={() => setActiveTab('payment')}
-          style={{ width: '100%', marginTop: '24px', padding: '14px', borderRadius: 'var(--radius-md)', background: '#FFD166', color: '#2B2D42', border: 'none', fontWeight: 800, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(255, 209, 102, 0.4)' }}
-        >
+        <button style={{ width: '100%', marginTop: '24px', padding: '14px', borderRadius: 'var(--radius-md)', background: '#FFD166', color: '#2B2D42', border: 'none', fontWeight: 800, fontSize: '15px', cursor: 'pointer' }}>
           Nâng cấp ngay
         </button>
       </div>
@@ -341,11 +241,7 @@ export default function Profile({ navigateTo }) {
     <>
       {activeTab === 'main' && renderMainProfile()}
       {activeTab === 'upgrade' && renderSubPage('Gói Nâng Cấp', renderUpgradeTab())}
-      {activeTab === 'pets' && renderSubPage('Quản lý Thú Cưng', renderPetsTab())}
-      {activeTab === 'notifications' && renderSubPage('Cài đặt Thông Báo', renderPlaceholder(<Bell size={48} color="var(--primary)" />, 'Thông báo'))}
-      {activeTab === 'payment' && renderSubPage('Quản lý Thanh Toán', renderPlaceholder(<CreditCard size={48} color="var(--secondary)" />, 'Thanh toán'))}
-      {activeTab === 'security' && renderSubPage('Bảo Mật', renderPlaceholder(<Shield size={48} color="#64748b" />, 'Bảo mật'))}
-      {activeTab === 'support' && renderSubPage('Trợ Giúp & Hỗ Trợ', renderPlaceholder(<HelpCircle size={48} color="#f59e0b" />, 'Hỗ trợ'))}
+      {activeTab === 'qr' && renderSubPage('Mã QR Thú Cưng', renderQRTab())}
     </>
   );
 }

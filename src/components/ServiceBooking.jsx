@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, MapPin, Star, Calendar, Clock, Crown, CheckCircle, ArrowLeft, X } from 'lucide-react';
 
 export default function ServiceBooking() {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState('Tất cả');
   const [selectedService, setSelectedService] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [bookingDone, setBookingDone] = useState(false);
@@ -10,13 +10,13 @@ export default function ServiceBooking() {
   // Demo: isPremium = false to show upsell
   const isPremium = false;
 
-  const categories = ['All', 'Grooming', 'Veterinary', 'Pet Hotel', 'Training'];
+  const categories = ['Tất cả', 'Spa thú cưng', 'Phòng Khám', 'Khách Sạn', 'Huấn Luyện'];
 
   const services = [
     {
       id: 1,
       name: 'Happy Paws Grooming Spa',
-      category: 'Grooming',
+      category: 'Spa thú cưng',
       rating: 4.9,
       reviews: 124,
       location: 'Quận 1, TP.HCM',
@@ -34,7 +34,7 @@ export default function ServiceBooking() {
     {
       id: 2,
       name: 'Phòng Khám PetCare',
-      category: 'Veterinary',
+      category: 'Phòng Khám',
       rating: 4.8,
       reviews: 89,
       location: 'Quận 7, TP.HCM',
@@ -52,7 +52,7 @@ export default function ServiceBooking() {
     {
       id: 3,
       name: 'Luxury Pet Resort',
-      category: 'Pet Hotel',
+      category: 'Khách Sạn',
       rating: 5.0,
       reviews: 42,
       location: 'Thành phố Thủ Đức',
@@ -66,7 +66,7 @@ export default function ServiceBooking() {
     }
   ];
 
-  const filteredServices = activeCategory === 'All'
+  const filteredServices = activeCategory === 'Tất cả'
     ? services
     : services.filter(s => s.category === activeCategory);
 
@@ -193,7 +193,7 @@ export default function ServiceBooking() {
       <div className="category-scroll" style={{ marginBottom: '20px' }}>
         {categories.map(cat => (
           <div key={cat} className={`category-chip ${activeCategory === cat ? 'active' : ''}`} onClick={() => setActiveCategory(cat)}>
-            {cat === 'All' ? 'Tất cả' : cat}
+            {cat}
           </div>
         ))}
       </div>

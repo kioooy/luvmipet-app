@@ -4,7 +4,7 @@ import { AlertTriangle, TrendingDown, Calendar, Lightbulb } from 'lucide-react';
 export default function Insights() {
   return (
     <div className="animate-fade-in" style={{ padding: '24px' }}>
-      <h1 className="text-h1" style={{ marginBottom: '8px' }}>AI Insights</h1>
+      <h1 className="text-h1" style={{ marginBottom: '8px' }}>Phân Tích AI</h1>
       <p className="text-caption" style={{ marginBottom: '24px' }}>Phân tích sức khỏe tuần qua</p>
 
       {/* AI Alert Card */}
