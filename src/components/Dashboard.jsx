@@ -37,8 +37,12 @@ export default function Dashboard({ navigateTo, isPremium }) {
         {/* Top bar */}
         <div className="dash-topbar">
           <div className="dash-brand">
-            <img src={logo} alt="LuvMiPet Logo" style={{ width: '32px', height: '32px', marginRight: '8px', objectFit: 'contain' }} />
-            <span className="dash-brand-luv" style={{ marginLeft: '4px' }}>Luv</span>
+            <img 
+              src={logo} 
+              alt="LuvMiPet Logo" 
+              className="dash-logo"
+            />
+            <span className="dash-brand-luv">Luv</span>
             <span className="dash-brand-mi">Mi</span>
             <span className="dash-brand-pet">Pet</span>
           </div>

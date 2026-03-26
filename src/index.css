@@ -709,6 +709,16 @@ h1, h2, h3, h4, h5, h6 {
 .dash-brand-pet { color: #7ED6C1; }
 .dash-brand-paw { font-size: 20px; margin-left: 4px; }
 
+.dash-logo {
+  width: 38px;
+  height: 38px;
+  margin-right: 10px;
+  object-fit: contain;
+  mix-blend-mode: screen; /* Làm biến mất nền tối, giữ lại line-art trắng */
+  filter: brightness(1.1);
+  border-radius: 8px;
+}
+
 .dash-notif-btn {
   width: 40px; height: 40px;
   border-radius: 50%;
