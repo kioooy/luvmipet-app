@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#073B46"/>
+      <stop offset="100%" style="stop-color:#0A5260"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F6B7A5"/>
+      <stop offset="50%" style="stop-color:#D48FE0"/>
+      <stop offset="100%" style="stop-color:#7ED6C1"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="50" fill="url(#bgGrad)"/>
+
+  <!-- Inner subtle ring -->
+  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Lettermark "LmP" combined -->
+  <!-- L - left vertical + bottom horizontal -->
+  <path d="M 22 28 L 22 68 L 38 68" 
+        stroke="url(#textGrad)" stroke-width="7" 
+        stroke-linecap="round" stroke-linejoin="round" 
+        fill="none" filter="url(#glow)"/>
+
+  <!-- M - center arch shape -->
+  <path d="M 36 68 L 36 34 L 50 52 L 64 34 L 64 68"
+        stroke="url(#textGrad)" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#glow)"/>
+
+  <!-- P - right vertical + bump -->
+  <path d="M 64 68 L 64 28 Q 85 28 85 44 Q 85 58 64 58"
+        stroke="url(#textGrad)" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#glow)"/>
+
+  <!-- Paw dots accent -->
+  <circle cx="50" cy="82" r="3" fill="#7ED6C1" opacity="0.7"/>
+  <circle cx="43" cy="86" r="2" fill="#F6B7A5" opacity="0.6"/>
+  <circle cx="57" cy="86" r="2" fill="#F6B7A5" opacity="0.6"/>
+</svg>
