@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck, Syringe, ArrowRight, Plus, Bell, Stethoscope, BookOpen, ShoppingBag, ChevronRight, Sparkles } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const MOCK_PHARMACY = [
   {
@@ -36,10 +37,10 @@ export default function Dashboard({ navigateTo, isPremium }) {
         {/* Top bar */}
         <div className="dash-topbar">
           <div className="dash-brand">
-            <span className="dash-brand-luv">Luv</span>
+            <img src={logo} alt="LuvMiPet Logo" style={{ width: '32px', height: '32px', marginRight: '8px', objectFit: 'contain' }} />
+            <span className="dash-brand-luv" style={{ marginLeft: '4px' }}>Luv</span>
             <span className="dash-brand-mi">Mi</span>
             <span className="dash-brand-pet">Pet</span>
-            <span className="dash-brand-paw">🐾</span>
           </div>
           <button className="dash-notif-btn" aria-label="Thông báo">
             <Bell size={20} />
